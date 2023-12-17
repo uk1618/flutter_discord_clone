@@ -21,5 +21,12 @@ class LoginText {
   String email = "Email";
   String password = "Şifre";
   String signIn = "Giriş Yap";
-    String notAmember = "Hemen Kayıt Ol";
+  String notAmember = "Hemen Kayıt Ol";
+}
+
+class ProfileText {
+  String email = 'Email';
+  String creationDate = ' Hesap Oluşturma Tarihi';
+  String aboutMe = "Hakkımda";
+  String signOut = "Çıkış Yap";
 }

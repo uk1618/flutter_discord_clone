@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
+import 'package:flutter_whatsapp_clone/constants/custom_text.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../services/auth/auth_service.dart';
@@ -46,6 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     CustomColors _customColors = CustomColors();
+    ProfileText _profileText = ProfileText();
     var user = _firebaseAuth.currentUser!;
     String originalDateString = user.metadata.creationTime.toString();
     String acc_creation_date = formatDate(originalDateString);
@@ -53,7 +55,6 @@ class _ProfilePageState extends State<ProfilePage> {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: getUserDataStream(user.uid),
       builder: (context, snapshot) {
-        print(user.metadata.creationTime.toString());
         if (!snapshot.hasData) {
           return CircularProgressIndicator(); // Loading indicator while data is being fetched
         }
@@ -73,11 +74,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   radius: 50,
                 ),
                 SizedBox(height: 20),
-                Text('Email: $email'),
+                Text('${_profileText.email}: $email'),
                 SizedBox(
                   height: 20,
                 ),
-                Text("Hesap Oluşturma Tarihi: ${acc_creation_date}"),
+                Text("${_profileText.creationDate}: ${acc_creation_date}"),
                 SizedBox(
                   height: 20,
                 ),
@@ -100,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         Row(
                           children: [
-                            Text('Hakkımda'),
+                            Text(_profileText.aboutMe),
                             Spacer(),
                             IconButton(
                               onPressed: () {
@@ -157,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           borderRadius: BorderRadius.circular(8)),
                       child: Center(
                         child: Text(
-                          'Çıkış Yap',
+                          _profileText.signOut,
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
