@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/services/server/server_service.dart';
 import '../services/chat/chat_service.dart';
 
@@ -17,7 +18,9 @@ class _ServerPageState extends State<ServerPage> {
 
   @override
   Widget build(BuildContext context) {
+    CustomColors _customColors = CustomColors();
     return Scaffold(
+      backgroundColor: _customColors.dcDark,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           return _showModalBottomSheet(context);

@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
+import 'package:flutter_whatsapp_clone/pages/messages_page.dart';
 import 'package:flutter_whatsapp_clone/pages/profile_page.dart';
+import 'package:flutter_whatsapp_clone/pages/server_page.dart';
 import 'package:flutter_whatsapp_clone/services/auth/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -26,68 +28,120 @@ class _HomepageState extends State<Homepage> {
     authService.signOut();
   }
 
+  int _currentIndex = 0;
 
+  // Screens that will be displayed in each tab
+  final List<Widget> _pages = [
+    HomeScreen(),
+    MessagesPage(),
+    ServerPage(),
+    ProfilePage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    CustomColors _customColors = CustomColors();
     return Scaffold(
-      backgroundColor: CustomColors().dcDark,
+      backgroundColor: _customColors.dcDark,
       appBar: AppBar(
+        backgroundColor: _customColors.dcDark,
+        elevation: 0,
+        title: Text('DISCORD'),
+        centerTitle: true,
         leading: IconButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()));
+                  MaterialPageRoute(builder: (context) => ProfilePage()));
             },
-            icon: const Icon(Icons.person)),
-        actions: [IconButton(onPressed: signOut, icon: const Icon(Icons.logout))],
+            icon: Icon(Icons.person)),
+        actions: [IconButton(onPressed: signOut, icon: Icon(Icons.logout))],
       ),
-      body: _buildUserList(),
+      bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.black,
+          selectedItemColor: Colors.greenAccent,
+          unselectedItemColor: Colors.grey,
+          elevation: 0,
+          currentIndex: _currentIndex,
+          onTap: (int index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Anasayfa',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.message_rounded),
+              label: 'Mesaj',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.connect_without_contact),
+              label: 'Sunucu',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profil',
+            ),
+          ]),
+      body: _pages[_currentIndex],
     );
-  }
-
-  //? build a list of users except for the current logged in user
-  Widget _buildUserList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('users').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('error: ${snapshot.error}');
-        }
-
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Text('loading...');
-        }
-
-        return ListView(
-          children: snapshot.data!.docs
-              .map<Widget>((doc) => _buildUserListItem(doc))
-              .toList(),
-        );
-      },
-    );
-  }
-
-  Widget _buildUserListItem(DocumentSnapshot document) {
-    Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-    if (_auth.currentUser!.email != data['email']) {
-      return ListTile(
-        title: Text(data['email']),
-        onTap: () {
-          //* pass the clicked user's UID to the chat page
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatPage(
-                  reciverUserEmail: data['email'],
-                  reciverUserID: data['uid'],
-                ),
-              ));
-        },
-      );
-    } else {
-      return Container();
-    }
   }
 }
 
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({
+    super.key,
+  });
 
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('ANASAYFA'),
+    );
+  }
+}
+
+class CustomBottomBar extends StatefulWidget {
+  int currentIndex = 0;
+  CustomBottomBar({
+    required currentIndex,
+    super.key,
+  });
+
+  @override
+  State<CustomBottomBar> createState() => _CustomBottomBarState();
+}
+
+class _CustomBottomBarState extends State<CustomBottomBar> {
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+        currentIndex: widget.currentIndex,
+        onTap: (int index) {
+          setState(() {
+            widget.currentIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Anasayfa',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message_rounded),
+            label: 'Mesaj',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.connect_without_contact),
+            label: 'Sunucu',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profil',
+          ),
+        ]);
+  }
+}

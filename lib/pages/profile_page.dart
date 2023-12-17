@@ -41,8 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
     String originalDateString = user.metadata.creationTime.toString();
     String acc_creation_date = formatDate(originalDateString);
 
-    return Scaffold(
-      body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: getUserDataStream(user.uid),
         builder: (context, snapshot) {
           print(user.metadata.creationTime.toString());
@@ -55,11 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
           String photoUrl = userData?['photoUrl'] ?? '';
           String aboutText = userData?['aboutText'] ?? '';
 
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Profile'),
-            ),
-            body: Center(
+          return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -144,10 +139,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   // Add more widgets to display other user information
                 ],
               ),
-            ),
           );
         },
-      ),
     );
   }
 
