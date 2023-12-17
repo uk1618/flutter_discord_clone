@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:intl/intl.dart';
-
-import '../services/chat/chat_service.dart';
+import 'package:provider/provider.dart';
+import '../services/auth/auth_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -35,112 +36,144 @@ class _ProfilePageState extends State<ProfilePage> {
         .snapshots();
   }
 
+  //* kullancıya çıkış yaptıran fonksiyon
+  void signOut() {
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    authService.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
+    CustomColors _customColors = CustomColors();
     var user = _firebaseAuth.currentUser!;
     String originalDateString = user.metadata.creationTime.toString();
     String acc_creation_date = formatDate(originalDateString);
 
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        stream: getUserDataStream(user.uid),
-        builder: (context, snapshot) {
-          print(user.metadata.creationTime.toString());
-          if (!snapshot.hasData) {
-            return CircularProgressIndicator(); // Loading indicator while data is being fetched
-          }
+      stream: getUserDataStream(user.uid),
+      builder: (context, snapshot) {
+        print(user.metadata.creationTime.toString());
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator(); // Loading indicator while data is being fetched
+        }
 
-          var userData = snapshot.data!.data();
-          String email = userData?['email'] ?? '';
-          String photoUrl = userData?['photoUrl'] ?? '';
-          String aboutText = userData?['aboutText'] ?? '';
-
-          return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(photoUrl),
-                    radius: 50,
+        var userData = snapshot.data!.data();
+        String email = userData?['email'] ?? '';
+        String photoUrl = userData?['photoUrl'] ?? '';
+        String aboutText = userData?['aboutText'] ?? '';
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(photoUrl),
+                  radius: 50,
+                ),
+                SizedBox(height: 20),
+                Text('Email: $email'),
+                SizedBox(
+                  height: 20,
+                ),
+                Text("Hesap Oluşturma Tarihi: ${acc_creation_date}"),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  height: 250,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                    border: Border.all(
+                      color: Colors.blueGrey, // Border color
+                      width: 2.0, // Border width
+                    ),
+                    borderRadius: BorderRadius.circular(
+                        10), // Optional: add border radius
                   ),
-                  SizedBox(height: 20),
-                  Text('Email: $email'),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text("Hesap Oluşturma Tarihi: ${acc_creation_date}"),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Container(
-                      height: 250,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.blueGrey,
-                        border: Border.all(
-                          color: Colors.blueGrey, // Border color
-                          width: 2.0, // Border width
-                        ),
-                        borderRadius: BorderRadius.circular(
-                            10), // Optional: add border radius
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                Text('Hakkımda'),
-                                Spacer(),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _isEditing = true;
-                                      _aboutTextController.text = aboutText;
-                                    });
-                                  },
-                                  icon: Icon(Icons.edit),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            _isEditing
-                                ? TextField(
-                                    maxLength: 100,
-                                    maxLines: 5,
-                                    controller: _aboutTextController,
-                                    decoration: InputDecoration(
-                                        suffixIcon: IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _isEditing = false;
-
-                                                updateAboutText(
-                                                    _aboutTextController.text,
-                                                    user.uid);
-                                              });
-                                            },
-                                            icon: Icon(Icons.done))),
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Text(aboutText,
-                                        style: TextStyle(fontSize: 16)),
-                                  ), // Show existing text when not editing
+                            Text('Hakkımda'),
+                            Spacer(),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isEditing = true;
+                                  _aboutTextController.text = aboutText;
+                                });
+                              },
+                              icon: Icon(Icons.edit),
+                            )
                           ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        _isEditing
+                            ? TextField(
+                                maxLength: 100,
+                                maxLines: 5,
+                                controller: _aboutTextController,
+                                decoration: InputDecoration(
+                                    suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _isEditing = false;
+
+                                            updateAboutText(
+                                                _aboutTextController.text,
+                                                user.uid);
+                                          });
+                                        },
+                                        icon: Icon(Icons.done))),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Text(aboutText,
+                                    style: TextStyle(fontSize: 16)),
+                              ), // Show existing text when not editing
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 60,
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: _customColors.dcRed,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Center(
+                        child: Text(
+                          'Çıkış Yap',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
                         ),
                       ),
                     ),
-                  )
-                  // Add more widgets to display other user information
-                ],
-              ),
-          );
-        },
+                  ),
+                ),
+
+                // Add more widgets to display other user information
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -150,10 +183,8 @@ class _ProfilePageState extends State<ProfilePage> {
           .collection('users')
           .doc(userId)
           .update({'aboutText': newText});
-
-      print('About text updated successfully!');
     } catch (e) {
-      print('Error updating about text: $e');
+      print('Hakkında kısmı güncellenirken bir sorun oluştu: $e');
     }
   }
 }

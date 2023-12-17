@@ -50,14 +50,17 @@ class _HomepageState extends State<Homepage> {
         centerTitle: true,
         leading: IconButton(
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()));
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('UMUT KONAK')));
             },
-            icon: Icon(Icons.person)),
-        actions: [IconButton(onPressed: signOut, icon: Icon(Icons.logout))],
+            icon: Icon(Icons.question_mark_outlined)),
+        actions: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.notifications))
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
+          iconSize: 28,
           backgroundColor: Colors.black,
           selectedItemColor: Colors.greenAccent,
           unselectedItemColor: Colors.grey,
