@@ -26,6 +26,8 @@ class _HomepageState extends State<Homepage> {
     authService.signOut();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,12 +36,11 @@ class _HomepageState extends State<Homepage> {
         leading: IconButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()));
+                  MaterialPageRoute(builder: (context) => const ProfilePage()));
             },
-            icon: Icon(Icons.person)),
-        actions: [IconButton(onPressed: signOut, icon: Icon(Icons.logout))],
+            icon: const Icon(Icons.person)),
+        actions: [IconButton(onPressed: signOut, icon: const Icon(Icons.logout))],
       ),
-      bottomNavigationBar: CustomBottomBar(),
       body: _buildUserList(),
     );
   }
@@ -89,30 +90,4 @@ class _HomepageState extends State<Homepage> {
   }
 }
 
-class CustomBottomBar extends StatelessWidget {
-  const CustomBottomBar({
-    super.key,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(items: [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.home),
-        label: 'Anasayfa',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.message_rounded),
-        label: 'Mesaj',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.connect_without_contact),
-        label: 'Sunucu',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.person),
-        label: 'Sunucu',
-      ),
-    ]);
-  }
-}
