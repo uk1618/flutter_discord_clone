@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
+import 'package:flutter_whatsapp_clone/constants/custom_text.dart';
 import 'package:flutter_whatsapp_clone/services/server/server_service.dart';
-import '../services/chat/chat_service.dart';
 
 class ServerPage extends StatefulWidget {
   const ServerPage({super.key});
@@ -13,15 +13,17 @@ class ServerPage extends StatefulWidget {
 }
 
 class _ServerPageState extends State<ServerPage> {
+  CustomColors _customColors = CustomColors();
+
   final ServerService serverService = ServerService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
-    CustomColors _customColors = CustomColors();
     return Scaffold(
       backgroundColor: _customColors.dcDark,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: _customColors.dcGreen,
         onPressed: () {
           return _showModalBottomSheet(context);
         },
@@ -31,7 +33,7 @@ class _ServerPageState extends State<ServerPage> {
         child: Column(
           children: [
             Text(
-              'Server List',
+              'Sunucular',
               style: TextStyle(fontSize: 36),
             ),
             SizedBox(
@@ -67,19 +69,28 @@ class _ServerPageState extends State<ServerPage> {
 
   Widget _buildServerItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-
-    return Column(
-      children: [
-        Text(data['serverName']),
-        SizedBox(
-          height: 20,
+    return ListTile(
+      title: Text(data['serverName']),
+      subtitle: Text(data['serverName']),
+      leading: CircleAvatar(
+        backgroundColor: _customColors.dcBlue,
+        child: Text(
+          data['serverName'][0],
+          style: TextStyle(fontSize: 36),
         ),
-        Text(data['serverDesc']),
-        SizedBox(
-          height: 20,
-        ),
-        Text(data['serverType']),
-      ],
+      ),
+      trailing: Container(
+        height: 25,
+        width: 70,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: _customColors.dcGreen),
+        child: Center(
+            child: Text(
+          data['serverType'],
+          style: TextStyle(fontSize: 16),
+        )),
+      ),
     );
   }
 }
@@ -101,11 +112,14 @@ class MyBottomSheet extends StatefulWidget {
 }
 
 class _MyBottomSheetState extends State<MyBottomSheet> {
+  ServerText _serverText = ServerText();
+  CustomColors _customColors = CustomColors();
+
   ServerService _serverService = ServerService();
   TextEditingController serverNameController = TextEditingController();
   TextEditingController serverDescriptionController = TextEditingController();
-  String selectedServerType = 'Eğitim';
 
+  String selectedServerType = 'Eğitim';
   List<String> serverTypes = ['Eğitim', 'Oyun', 'Sosyal', 'Müzik'];
 
   void createServer() async {
@@ -122,22 +136,36 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Sunucu Ekle',
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            children: [
+              Text(
+                _serverText.createServer,
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
+              Spacer(),
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.cancel,
+                    color: _customColors.dcRed,
+                    size: 30,
+                  )),
+            ],
           ),
+          Divider(),
           SizedBox(height: 16.0),
           TextFormField(
             controller: serverNameController,
-            decoration: InputDecoration(labelText: 'Sunucu Adı'),
+            decoration: InputDecoration(labelText: _serverText.serverName),
           ),
           SizedBox(height: 16.0),
           TextFormField(
             controller: serverDescriptionController,
-            decoration: InputDecoration(labelText: 'Sunucu Açıklaması'),
+            decoration: InputDecoration(labelText: _serverText.serverDesc),
           ),
           SizedBox(height: 16.0),
           DropdownButton<String>(
@@ -155,17 +183,29 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
             }).toList(),
           ),
           SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              String serverName = serverNameController.text;
-              String serverDescription = serverDescriptionController.text;
-              print('Sunucu Adı: $serverName');
-              print('Sunucu Açıklaması: $serverDescription');
-              print('Sunucu Türü: $selectedServerType');
-              createServer();
-              Navigator.pop(context);
-            },
-            child: Text('Sunucu Ekle'),
+          Container(
+            width: double.infinity,
+            height: 40,
+            child: GestureDetector(
+              onTap: () {
+                createServer();
+                Navigator.pop(context);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: _customColors.dcGreen,
+                    borderRadius: BorderRadius.circular(8)),
+                child: Center(
+                  child: Text(
+                    _serverText.createServer,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),

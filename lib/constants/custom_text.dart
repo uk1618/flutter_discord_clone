@@ -26,7 +26,16 @@ class LoginText {
 
 class ProfileText {
   String email = 'Email';
-  String creationDate = ' Hesap Oluşturma Tarihi';
+  String creationDate = 'Hesap Oluşturma Tarihi';
   String aboutMe = "Hakkımda";
   String signOut = "Çıkış Yap";
+}
+
+class ServerText {
+  
+  String createServer = 'Sunucu Oluştur';
+  String serverName = 'Sunucu adı';
+  String serverDesc = 'Sunucu hakkında';
+
+
 }

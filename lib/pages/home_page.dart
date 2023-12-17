@@ -50,8 +50,8 @@ class _HomepageState extends State<Homepage> {
         centerTitle: true,
         leading: IconButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('UMUT KONAK')));
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text('UMUT KONAK')));
             },
             icon: Icon(Icons.question_mark_outlined)),
         actions: [
@@ -62,7 +62,7 @@ class _HomepageState extends State<Homepage> {
           type: BottomNavigationBarType.fixed,
           iconSize: 28,
           backgroundColor: Colors.black,
-          selectedItemColor: Colors.greenAccent,
+          selectedItemColor: _customColors.dcGreen,
           unselectedItemColor: Colors.grey,
           elevation: 0,
           currentIndex: _currentIndex,
