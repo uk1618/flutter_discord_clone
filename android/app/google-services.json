@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "170105565476",
+    "project_id": "flutter-wp-548ab",
+    "storage_bucket": "flutter-wp-548ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170105565476:android:ae20b9730bfd2e8a1743b1",
+        "android_client_info": {
+          "package_name": "com.example.flutter_whatsapp_clone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0GeszgEjsoMCquO8oOfnTTWUbDoZoZAI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
