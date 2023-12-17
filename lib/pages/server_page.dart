@@ -71,7 +71,7 @@ class _ServerPageState extends State<ServerPage> {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     return ListTile(
       title: Text(data['serverName']),
-      subtitle: Text(data['serverName']),
+      subtitle: Text(data['serverDesc']),
       leading: CircleAvatar(
         backgroundColor: _customColors.dcBlue,
         child: Text(

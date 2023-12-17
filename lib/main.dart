@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/firebase_options.dart';
-import 'package:flutter_whatsapp_clone/pages/onboarding_page.dart';
 import 'package:flutter_whatsapp_clone/pages/register_page.dart';
 import 'package:flutter_whatsapp_clone/services/auth/auth_gate.dart';
 import 'package:flutter_whatsapp_clone/services/auth/auth_service.dart';

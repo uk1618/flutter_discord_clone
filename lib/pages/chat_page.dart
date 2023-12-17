@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/components/chat_bubble.dart';
 import 'package:flutter_whatsapp_clone/components/custom_textfield.dart';
+import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/services/chat/chat_service.dart';
 import 'package:intl/intl.dart';
 
@@ -17,6 +18,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  CustomColors _customColors = CustomColors();
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -35,8 +37,16 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: _customColors.dcDark,
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         title: Text(widget.reciverUserEmail),
+        actions: [
+          CircleAvatar(
+              backgroundColor: _customColors.dcBlue,
+              child: Image.network('https://picsum.photos/100')),
+        ],
       ),
       body: Column(
         children: [
@@ -45,14 +55,16 @@ class _ChatPageState extends State<ChatPage> {
 
           //* user input
           _buildMessageInput(),
-          
-          const SizedBox(height: 25,),
+
+          const SizedBox(
+            height: 25,
+          ),
         ],
       ),
     );
   }
 
-  //* build message list
+  //* build chat room message list
   Widget _buildMessageList() {
     return StreamBuilder(
       stream: _chatService.getMessages(
@@ -64,8 +76,11 @@ class _ChatPageState extends State<ChatPage> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
+
         return ListView(
-          children: snapshot.data!.docs.map((document) => _buildMessageItem(document)).toList(),
+          children: snapshot.data!.docs
+              .map((document) => _buildMessageItem(document))
+              .toList(),
         );
       },
     );
@@ -84,9 +99,11 @@ class _ChatPageState extends State<ChatPage> {
       alignment: alignment,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column
-        (
-          crossAxisAlignment: (data['senderId'] == _firebaseAuth.currentUser!.uid ? CrossAxisAlignment.end : CrossAxisAlignment.start),
+        child: Column(
+          crossAxisAlignment:
+              (data['senderId'] == _firebaseAuth.currentUser!.uid
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start),
           children: [
             Text(data['senderEmail']),
             ChatBubble(message: data['message']),
@@ -110,7 +127,7 @@ class _ChatPageState extends State<ChatPage> {
             hintText: 'Write a message',
             controller: _messageController,
           )),
-    
+
           //* send button
           IconButton(
               onPressed: sendMessage,
@@ -123,17 +140,16 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-
   String formatTimestamp(Timestamp timestamp) {
-       // Convert the Firebase timestamp to a Dart DateTime object
-  DateTime dateTime = timestamp.toDate();
+    // Convert the Firebase timestamp to a Dart DateTime object
+    DateTime dateTime = timestamp.toDate();
 
-  // Add a duration of +3 hours to adjust the timezone
-  DateTime adjustedDateTime = dateTime.add(Duration(hours: 3));
+    // Add a duration of +3 hours to adjust the timezone
+    DateTime adjustedDateTime = dateTime.add(Duration(hours: 3));
 
-  // Format the adjusted DateTime object to HH:MM
-  String formattedTime = DateFormat.Hm().format(adjustedDateTime);
+    // Format the adjusted DateTime object to HH:MM
+    String formattedTime = DateFormat.Hm().format(adjustedDateTime);
 
-  return formattedTime;
+    return formattedTime;
   }
 }
