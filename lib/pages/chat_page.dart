@@ -34,56 +34,79 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _customColors.dcDark,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: Text(widget.reciverUserEmail),
-        actions: [
-          CircleAvatar(
-              backgroundColor: _customColors.dcBlue,
-              child: Image.network('https://picsum.photos/100')),
-        ],
-      ),
-      body: Column(
-        children: [
-          //* messages
-          Expanded(child: _buildMessageList()),
+  String formatTimestamp(Timestamp timestamp) {
+    // Convert the Firebase timestamp to a Dart DateTime object
+    DateTime dateTime = timestamp.toDate();
 
-          //* user input
-          _buildMessageInput(),
+    // Add a duration of +3 hours to adjust the timezone
+    DateTime adjustedDateTime = dateTime.add(Duration(hours: 3));
 
-          const SizedBox(
-            height: 25,
-          ),
-        ],
-      ),
-    );
+    // Format the adjusted DateTime object to HH:MM
+    String formattedTime = DateFormat.Hm().format(adjustedDateTime);
+
+    return formattedTime;
   }
 
-  //* build chat room message list
-  Widget _buildMessageList() {
-    return StreamBuilder(
-      stream: _chatService.getMessages(
-          widget.reciverUserID, _firebaseAuth.currentUser!.uid),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error ${snapshot.error}');
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserDataStream(
+      String userId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots();
+  }
 
-        return ListView(
-          children: snapshot.data!.docs
-              .map((document) => _buildMessageItem(document))
-              .toList(),
-        );
-      },
-    );
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: getUserDataStream(widget.reciverUserID),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('${snapshot.error}'),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Loading indicator while data is being fetched
+          }
+          var userData = snapshot.data!.data();
+          String email = userData?['email'] ?? '';
+          String photoUrl = userData?['photoUrl'] ?? '';
+          String aboutText = userData?['aboutText'] ?? '';
+          return Scaffold(
+            backgroundColor: _customColors.dcDark,
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              title: Text(widget.reciverUserEmail),
+              actions: [
+                CircleAvatar(
+                  backgroundColor: _customColors.dcGrey,
+                  radius: 25,
+                  child: ClipOval(
+                    child: Image.network(
+                      photoUrl,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            body: Column(
+              children: [
+                //* messages
+                Expanded(child: _buildMessageList()),
+
+                //* user input
+                _buildMessageInput(),
+
+                const SizedBox(
+                  height: 25,
+                ),
+              ],
+            ),
+          );
+        });
   }
 
   //? build message item
@@ -106,7 +129,13 @@ class _ChatPageState extends State<ChatPage> {
                   : CrossAxisAlignment.start),
           children: [
             Text(data['senderEmail']),
+            SizedBox(
+              height: 5,
+            ),
             ChatBubble(message: data['message']),
+            SizedBox(
+              height: 5,
+            ),
             Text(formatTimestamp(data['timestamp'])),
           ],
         ),
@@ -114,7 +143,28 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  //* build message input
+  Widget _buildMessageList() {
+    return StreamBuilder(
+      stream: _chatService.getMessages(
+          widget.reciverUserID, _firebaseAuth.currentUser!.uid),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error ${snapshot.error}');
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        return ListView(
+          children: snapshot.data!.docs
+              .map((document) => _buildMessageItem(document))
+              .toList(),
+        );
+      },
+    );
+  }
+
+//* build message input
   Widget _buildMessageInput() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -138,18 +188,5 @@ class _ChatPageState extends State<ChatPage> {
         ],
       ),
     );
-  }
-
-  String formatTimestamp(Timestamp timestamp) {
-    // Convert the Firebase timestamp to a Dart DateTime object
-    DateTime dateTime = timestamp.toDate();
-
-    // Add a duration of +3 hours to adjust the timezone
-    DateTime adjustedDateTime = dateTime.add(Duration(hours: 3));
-
-    // Format the adjusted DateTime object to HH:MM
-    String formattedTime = DateFormat.Hm().format(adjustedDateTime);
-
-    return formattedTime;
   }
 }

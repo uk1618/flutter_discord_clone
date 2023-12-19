@@ -29,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return formattedDate;
   }
 
+ //* kulanıcının bilgilerini getirir
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserDataStream(
       String userId) {
     return FirebaseFirestore.instance
