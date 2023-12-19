@@ -69,6 +69,25 @@ class _ServerPageState extends State<ServerPage> {
 
   Widget _buildServerItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+    String serverType = data['serverType'];
+    Color labelColor = Colors.green;
+
+      if (serverType.toString() == 'Oyun') {
+       labelColor = _customColors.dcRed;
+      }
+      if (serverType.toString() == 'Sosyal') {
+        labelColor = _customColors.dcGreen;
+      }
+
+      if (serverType.toString() == 'Eğitim') {
+       labelColor = _customColors.dcBlue;
+      }
+
+      if (serverType.toString() == 'Müzik') {
+       labelColor = Colors.pinkAccent;
+      }
+    
+    
     return ListTile(
       title: Text(data['serverName']),
       subtitle: Text(data['serverDesc']),
@@ -83,8 +102,7 @@ class _ServerPageState extends State<ServerPage> {
         height: 25,
         width: 70,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: _customColors.dcGreen),
+            borderRadius: BorderRadius.circular(10), color: labelColor),
         child: Center(
             child: Text(
           data['serverType'],
