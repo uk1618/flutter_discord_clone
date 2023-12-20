@@ -52,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var user = _firebaseAuth.currentUser!;
     String originalDateString = user.metadata.creationTime.toString();
     String acc_creation_date = formatDate(originalDateString);
-
+    
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: getUserDataStream(user.uid),
       builder: (context, snapshot) {

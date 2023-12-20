@@ -113,7 +113,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildMessageItem(DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
 
-    //* align the messages to the right if the sender is the current user, otherwize to the left
+    //* alınan mesajlar solda; atılan mesajlar sağda gözükmesi için
     var alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid)
         ? Alignment.centerRight
         : Alignment.centerLeft;

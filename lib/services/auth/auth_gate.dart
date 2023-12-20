@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/pages/home_page.dart';
 import 'package:flutter_whatsapp_clone/pages/profile_page.dart';
-import 'package:flutter_whatsapp_clone/pages/server_page.dart';
+import 'package:flutter_whatsapp_clone/pages/server_list_page.dart';
 import 'package:flutter_whatsapp_clone/services/auth/login_or_register.dart';
 
 class AuthGate extends StatelessWidget {

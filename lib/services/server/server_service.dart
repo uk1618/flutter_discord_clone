@@ -26,7 +26,7 @@ class ServerService extends ChangeNotifier {
 
        //* construct unique serverID combine userID and timestamp
        //! bu iyi bir yöntem değil değiştirelecek
-    List<String> ids = [currentUserId, timestamp.toString()];
+    List<String> ids = [serverName[5], '59021',serverDesc[2], '0'];
     ids.sort();
     String serverId = ids.join("_");
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/pages/messages_page.dart';
 import 'package:flutter_whatsapp_clone/pages/profile_page.dart';
-import 'package:flutter_whatsapp_clone/pages/server_page.dart';
+import 'package:flutter_whatsapp_clone/pages/server_list_page.dart';
 import 'package:flutter_whatsapp_clone/services/auth/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -31,10 +31,10 @@ class _HomepageState extends State<Homepage> {
   int _currentIndex = 0;
 
   // Screens that will be displayed in each tab
-  final List<Widget> _pages = [
+  final List<Widget> _pages = const [
     HomeScreen(),
     MessagesPage(),
-    ServerPage(),
+    ServerListPage(),
     ProfilePage(),
   ];
 
