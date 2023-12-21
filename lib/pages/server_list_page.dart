@@ -14,11 +14,12 @@ class ServerListPage extends StatefulWidget {
 }
 
 class _ServerListPageState extends State<ServerListPage> {
+      final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
   late String serverId;
   final CustomColors _customColors = CustomColors();
 
   final ServerService serverService = ServerService();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +51,13 @@ class _ServerListPageState extends State<ServerListPage> {
 
   Widget _buildServerList() {
     return StreamBuilder(
-      stream: serverService.getServers(_firebaseAuth.currentUser!.uid),
+      stream: serverService.getServers(firebaseAuth.currentUser!.uid),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error ${snapshot.error}');
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return Expanded(
           child: ListView(
@@ -164,10 +165,17 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
   String selectedServerType = 'Eğitim';
   List<String> serverTypes = ['Eğitim', 'Oyun', 'Sosyal', 'Müzik'];
 
-  void createServer() async {
+  void createServer(userId) async {
     if (serverNameController.text.isNotEmpty) {
-      await _serverService.createServer(serverNameController.text,
-          serverDescriptionController.text, selectedServerType);
+      //* await _serverService.createServer(serverNameController.text,
+       //*   serverDescriptionController.text, selectedServerType); 
+          //*
+
+      await _serverService.createServerWithDefaultChannel(
+          userId,
+          serverNameController.text,
+          serverDescriptionController.text,
+          selectedServerType);
     }
   }
 
@@ -230,7 +238,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
             height: 40,
             child: GestureDetector(
               onTap: () {
-                createServer();
+                createServer(FirebaseAuth.instance.currentUser!.uid);
                 Navigator.pop(context);
               },
               child: Container(

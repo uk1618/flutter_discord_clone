@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
-import 'package:flutter_whatsapp_clone/pages/server_list_page.dart';
 
 class ServerPage extends StatefulWidget {
   final String serverId;
@@ -21,8 +20,15 @@ class _ServerPageState extends State<ServerPage> {
   //* sunucunun detaylarını getirir
   Stream<DocumentSnapshot<Map<String, dynamic>>> getServerDetail(
       String serverId) {
-    return FirebaseFirestore.instance.collection('users').doc(_firebaseAuth.currentUser!.uid).collection('servers').doc(serverId).snapshots();
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_firebaseAuth.currentUser!.uid)
+        .collection('servers')
+        .doc(serverId)
+        .snapshots();
   }
+
+  //*
 
   @override
   Widget build(BuildContext context) {
@@ -48,20 +54,30 @@ class _ServerPageState extends State<ServerPage> {
 
           return Scaffold(
             backgroundColor: _customColors.dcDark,
+            drawer: Drawer(
+              child: Expanded(
+                  child: StreamBuilder(
+                stream: null,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Error ${snapshot.error}');
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  return ListView(
+                    
+                  );
+                },
+              )),
+            ),
             appBar: AppBar(
               elevation: 0,
               backgroundColor: Colors.transparent,
               centerTitle: true,
-              title: Text(''),
-              leading: IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ServerListPage(),
-                        ));
-                  },
-                  icon: Icon(Icons.chevron_left_rounded)),
+              title: Text('Kanal Adı'),
             ),
             body: Column(
               children: [

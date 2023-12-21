@@ -1,0 +1,11 @@
+flutter_native_splash:
+  color: "#1E1F22"
+  image: assets/discord_brand.png
+
+
+  android_12:
+    color: "#1E1F22"
+    image: assets/discord_logo.png
+  
+  web: false
+  

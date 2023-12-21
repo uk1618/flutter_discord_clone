@@ -156,6 +156,7 @@ class _ChatPageState extends State<ChatPage> {
         }
 
         return ListView(
+          
           children: snapshot.data!.docs
               .map((document) => _buildMessageItem(document))
               .toList(),
