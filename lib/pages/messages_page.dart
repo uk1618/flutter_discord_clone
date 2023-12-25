@@ -62,7 +62,6 @@ class _MessagesPageState extends State<MessagesPage> {
               color: customColors.dcGrey,
               borderRadius: BorderRadius.circular(5)),
           child: ListTile(
-           
             leading: CircleAvatar(
                   backgroundColor: customColors.dcGrey,
                   radius: 25,

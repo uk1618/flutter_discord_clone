@@ -171,7 +171,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
        //*   serverDescriptionController.text, selectedServerType); 
           //*
 
-      await _serverService.createServerWithDefaultChannel(
+      await _serverService.createServerWithDefaultChannel2(
           userId,
           serverNameController.text,
           serverDescriptionController.text,

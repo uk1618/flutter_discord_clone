@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/model/message.dart';
 
 class ChatService extends ChangeNotifier {
-  //* get instance of firestore
+  //* firebaseauth ve firebasestore'dan instance alma
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
-  //* send message
+  //* mesaj gönder fonkisyonu
   Future<void> sendMessage(String reciverId, String message) async {
-    //* get current user info
+    //* şuanki kullancının id'si
     final String currentUserId = _firebaseAuth.currentUser!.uid;
     final String currentUserEmail = _firebaseAuth.currentUser!.email.toString();
     final Timestamp timestamp = Timestamp.now();
 
-    //* create a new message
+    //* yeni mesaj oluştur
     Message newMessage = Message(
         senderId: currentUserId,
         senderEmail: currentUserEmail,
@@ -28,11 +28,11 @@ class ChatService extends ChangeNotifier {
     ids.sort();
     String chatRoomId = ids.join("_");
 
-    //* add new message to database
+    //*     //* yeni mesajı firestore'a ekle
     await _fireStore.collection('chat_rooms').doc(chatRoomId).collection('messages').add(newMessage.toMap());
   }
 
-  //* get messages
+  //* mesajları getir
   Stream<QuerySnapshot> getMessages(String userId, String otherUserId){
      //* construct chat room id from current user id and recevier otherUserId
     List<String> ids = [userId, otherUserId];
