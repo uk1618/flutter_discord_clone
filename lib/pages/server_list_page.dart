@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_text.dart';
 import 'package:flutter_whatsapp_clone/pages/server_page.dart';
@@ -14,7 +15,7 @@ class ServerListPage extends StatefulWidget {
 }
 
 class _ServerListPageState extends State<ServerListPage> {
-      final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   late String serverId;
   final CustomColors _customColors = CustomColors();
@@ -25,12 +26,21 @@ class _ServerListPageState extends State<ServerListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _customColors.dcDark,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
         backgroundColor: _customColors.dcGreen,
-        onPressed: () {
-          return _showModalBottomSheet(context);
-        },
-        child: Icon(Icons.add),
+        animatedIconTheme: IconThemeData(color: Colors.white),
+        children: [
+          SpeedDialChild(
+            child: Icon(
+              Icons.add,
+            ),
+            label: 'Sunucu Oluştur',
+            onTap: () {
+              return _showModalBottomSheet(context);
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -168,8 +178,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
   void createServer(userId) async {
     if (serverNameController.text.isNotEmpty) {
       //* await _serverService.createServer(serverNameController.text,
-       //*   serverDescriptionController.text, selectedServerType); 
-          //*
+      //*   serverDescriptionController.text, selectedServerType);
+      //*
 
       await _serverService.createServerWithDefaultChannel2(
           userId,

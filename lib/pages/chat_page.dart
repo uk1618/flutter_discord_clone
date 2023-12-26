@@ -94,10 +94,10 @@ class _ChatPageState extends State<ChatPage> {
             ),
             body: Column(
               children: [
-                //* messages
+                //* mesajlar
                 Expanded(child: _buildMessageList()),
 
-                //* user input
+                //*mesaj yaz
                 _buildMessageInput(),
 
                 const SizedBox(
@@ -156,7 +156,6 @@ class _ChatPageState extends State<ChatPage> {
         }
 
         return ListView(
-          
           children: snapshot.data!.docs
               .map((document) => _buildMessageItem(document))
               .toList(),

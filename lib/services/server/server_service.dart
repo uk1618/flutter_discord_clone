@@ -118,7 +118,7 @@ class ServerService extends ChangeNotifier {
         DocumentReference newUserChannelRef =
             newUserServerRef.collection('channels').doc();
         transaction.set(newUserChannelRef,
-            {'name': 'Ana Kanal', 'desc': '', 'type': 'metin'});
+            {'channelName': 'Ana Kanal', 'channelDesc': '', 'channelType': 'metin'});
 
         // Create a default channel for the server
         DocumentReference newChannelRef =
@@ -133,6 +133,7 @@ class ServerService extends ChangeNotifier {
     }
   }
 
+//* Sunucu Oluşturma
 
  Future<void> createServerWithDefaultChannel2(
   String currentUserId,

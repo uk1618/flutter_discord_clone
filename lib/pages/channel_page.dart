@@ -78,36 +78,23 @@ class _ChannelPageState extends State<ChannelPage> {
           ),
           body: Column(
             children: [
+              Text('deneme'),
               Expanded(
+                //* mesajlar
                 child: _buildMessageList(),
               ),
+
               SizedBox(
                 height: 20,
               ),
+
+              //*mesaj yaz
               _buildMessageInput(),
+              SizedBox(
+                height: 20,
+              ),
             ],
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildMessageList() {
-    return StreamBuilder(
-      stream: _channelService.getMessages(
-          widget.channelId, _firebaseAuth.currentUser!.uid, widget.serverId),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Error ${snapshot.error}');
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        return ListView(
-          children: snapshot.data!.docs
-              .map((document) => _buildMessageItem(document))
-              .toList(),
         );
       },
     );
@@ -118,16 +105,39 @@ class _ChannelPageState extends State<ChannelPage> {
 
     bool me =
         (data['senderId'] == _firebaseAuth.currentUser!.uid) ? true : false;
+
     return ListTile(
       selected: me,
       selectedColor: _customColors.dcGreen,
-      title: Text('@test123'),
-      subtitle: Text('data'),
-      trailing: Text('13:13'),
+      title: Text(data['message']),
+      subtitle: Text(data['senderEmail']),
+      trailing: Text(formatTimestamp(data['timestamp'])),
       leading: CircleAvatar(
-        backgroundColor: Colors.green,
-        child: Text('1'),
+        backgroundColor: Colors.blue,
+        child: Text(
+          '1',
+          style: TextStyle(color: Colors.red),
+        ),
       ),
+    );
+  }
+
+  Widget _buildMessageList() {
+    return StreamBuilder(
+      stream: _channelService.getMessages(widget.channelId, widget.serverId),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error ${snapshot.error}');
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        return ListView(
+          children: snapshot.data!.docs
+              .map((document) => _buildMessageItem(document))
+              .toList(),
+        );
+      },
     );
   }
 

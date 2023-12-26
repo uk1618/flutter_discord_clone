@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/model/channel_message.dart';
 
+import '../../model/channel.dart';
+
 class ChannelService extends ChangeNotifier{
   //* firebaseauth ve firebasestore'dan instance alma
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -29,11 +31,28 @@ class ChannelService extends ChangeNotifier{
   }
 
   //* mesajları getir
-  Stream<QuerySnapshot> getMessages(String userId, String channelId, String serverId){
+  Stream<QuerySnapshot> getMessages(String channelId, String serverId){
     return _fireStore.collection('servers').doc(serverId).collection('channels').doc(channelId).collection('messages').orderBy('timestamp', descending: false).snapshots();
   }
 
 
+//* Kanal Oluşturma
+ Future<void> createChannel(
+  String serverId,
+  String channelName,
+  String channelDesc,
+  String channelType,
+) async {
+  final CollectionReference serverCollection = FirebaseFirestore.instance
+      .collection('servers');
 
+
+  Channel newChannel = Channel(channelName: channelName, channelDesc: channelDesc, channelType: channelType);
+
+    await serverCollection.doc(serverId).collection('channels').add(newChannel.toMap());
+
+
+ 
+  }
 
 }

@@ -101,8 +101,71 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('ANASAYFA'),
+    CustomColors _customColors = CustomColors();
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Text(
+              'Popüler Sunucular',
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            GridView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              itemCount: 20,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 85,
+                          width: 85,
+                          child: Image.asset('assets/server.png'),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          'DENEME',
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                        Spacer(),
+                        Container(
+                          width: double.infinity,
+                          height: 35,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text('Sunucuya Katıl'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _customColors.dcBlue,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
