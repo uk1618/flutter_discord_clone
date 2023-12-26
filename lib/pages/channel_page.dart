@@ -78,7 +78,6 @@ class _ChannelPageState extends State<ChannelPage> {
           ),
           body: Column(
             children: [
-              Text('deneme'),
               Expanded(
                 //* mesajlar
                 child: _buildMessageList(),

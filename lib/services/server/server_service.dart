@@ -77,13 +77,21 @@ class ServerService extends ChangeNotifier {
     await _fireStore.collection('servers').add(newServer.toMap());
   }
 
-  //* get user member of servers
+  //* kullanıcın üye olduğu sunucuları listele
   Stream<QuerySnapshot> getServers(String userId) {
     return _fireStore
         .collection('users')
         .doc(userId)
         .collection('servers')
         .snapshots();
+  }
+
+
+  
+  //* get all servers
+  Stream<QuerySnapshot> getAllServers() {
+    return _fireStore
+        .collection('servers').snapshots();
   }
 
   Future<void> createServerWithDefaultChannel(String currentUserId,
@@ -189,6 +197,28 @@ class ServerService extends ChangeNotifier {
     print('Sunucu oluşturulrken bir hata meydana geldi: $e');
   }
 }
+  Future<void> joinAserver(
+      String serverId, String serverName, String serverDesc, String serverType, ) async {
+    //* get current user info
+    final String currentUserId = _firebaseAuth.currentUser!.uid;
+    final Timestamp timestamp = Timestamp.now();
+
+    Server newServer = Server(
+      creator: serverId,
+      serverName: serverName,
+      serverDesc: serverDesc,
+      serverType: serverType,
+      timestamp: timestamp,
+    );
+
+    //* add new server to user -> database
+    await _fireStore
+        .collection('users')
+        .doc(currentUserId)
+        .collection('servers')
+        .add(newServer.toMap());
+
+  }
 
   }
 
@@ -206,5 +236,15 @@ class ServerService extends ChangeNotifier {
         .collection('messages')
         .orderBy('timestamp', descending: false)
         .snapshots();
+
+
+
+
+
+
+  
   }
+
+
+  
 

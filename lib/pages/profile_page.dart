@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return formattedDate;
   }
 
- //* kulanıcının bilgilerini getirir
+  //* kulanıcının bilgilerini getirir
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserDataStream(
       String userId) {
     return FirebaseFirestore.instance
@@ -52,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var user = _firebaseAuth.currentUser!;
     String originalDateString = user.metadata.creationTime.toString();
     String acc_creation_date = formatDate(originalDateString);
-    
+
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: getUserDataStream(user.uid),
       builder: (context, snapshot) {
@@ -168,7 +168,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     width: double.infinity,
                     height: 60,
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        signOut();
+                      },
                       child: Container(
                         decoration: BoxDecoration(
                             color: _customColors.dcRed,

@@ -41,6 +41,7 @@ dependencies:
   intl: ^0.18.1
   intl_utils: ^2.8.6
   provider: ^6.1.1
+  quickalert: ^1.0.2
 
 dev_dependencies:
   flutter_lints: ^2.0.0

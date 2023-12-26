@@ -22,6 +22,8 @@ class _ServerListPageState extends State<ServerListPage> {
 
   final ServerService serverService = ServerService();
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,7 +106,6 @@ class _ServerListPageState extends State<ServerListPage> {
 
     return GestureDetector(
       onTap: () {
-        print(document.id);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -147,6 +148,8 @@ class _ServerListPageState extends State<ServerListPage> {
     );
   }
 }
+
+ 
 
 void _showModalBottomSheet(BuildContext context) {
   showModalBottomSheet(

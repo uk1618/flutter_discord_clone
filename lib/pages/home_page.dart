@@ -6,9 +6,9 @@ import 'package:flutter_whatsapp_clone/pages/messages_page.dart';
 import 'package:flutter_whatsapp_clone/pages/profile_page.dart';
 import 'package:flutter_whatsapp_clone/pages/server_list_page.dart';
 import 'package:flutter_whatsapp_clone/services/auth/auth_service.dart';
+import 'package:flutter_whatsapp_clone/services/server/server_service.dart';
 import 'package:provider/provider.dart';
-
-import 'chat_page.dart';
+import 'package:quickalert/quickalert.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -94,14 +94,20 @@ class _HomepageState extends State<Homepage> {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
   });
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+
+  @override
   Widget build(BuildContext context) {
-    CustomColors _customColors = CustomColors();
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
@@ -114,52 +120,23 @@ class HomeScreen extends StatelessWidget {
             SizedBox(
               height: 20,
             ),
-            GridView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          height: 85,
-                          width: 85,
-                          child: Image.asset('assets/server.png'),
-                        ),
-                        SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          'DENEME',
-                          style: TextStyle(fontSize: 16, color: Colors.black),
-                        ),
-                        Spacer(),
-                        Container(
-                          width: double.infinity,
-                          height: 35,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text('Sunucuya Katıl'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: _customColors.dcBlue,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
+            StreamBuilder(
+              stream: ServerService().getAllServers(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error ${snapshot.error}');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return GridView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
+                  children: snapshot.data!.docs
+                      .map((document) => _buildServerItem(document, context))
+                      .toList(),
                 );
               },
             ),
@@ -168,6 +145,100 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showDialog(BuildContext context, String serverId, String serverName, String serverDesc, String serverType) {
+                  final ServerService _serverService = ServerService();
+
+  void joinAserver(String serverId, String serverName, String serverDesc,
+      String serverType) async {
+    await _serverService.joinAserver(
+        serverId, serverName, serverDesc, serverType);
+  }
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Sunucuya Katıl'),
+        content: Text('Sunucuya katılmak istediğinizden emin misiniz ?'),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: CustomColors().dcBlue),
+            onPressed: () {
+joinAserver(serverId, serverName, serverDesc, serverType);
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.success,
+                confirmBtnText: 'OK',
+                text: 'Sunucuya katıldınız!',
+                autoCloseDuration: const Duration(seconds: 2),
+              );
+
+              Navigator.of(context).pop();
+            },
+            child: Text('KATIL'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: CustomColors().dcBlue),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('İPTAL'),
+          )
+        ],
+      );
+    },
+  );
+}
+
+Widget _buildServerItem(DocumentSnapshot document, BuildContext context) {
+  Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+  String serverId = document.id;
+  return Padding(
+    padding: const EdgeInsets.all(4.0),
+    child: Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(5)),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            height: 85,
+            width: 85,
+            child: Image.asset('assets/server.png'),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            data['serverName'],
+            style: TextStyle(fontSize: 16, color: Colors.black),
+          ),
+          Spacer(),
+          Container(
+            width: double.infinity,
+            height: 35,
+            child: ElevatedButton(
+              onPressed: () {
+                _showDialog(context, serverId, data['serverName'], data['serverDesc'],  data['serverType']);
+              },
+              child: Text('Sunucuya Katıl'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: CustomColors().dcBlue,
+              ),
+            ),
+          )
+        ],
+      ),
+    ),
+  );
 }
 
 class CustomBottomBar extends StatefulWidget {
