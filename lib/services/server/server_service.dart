@@ -183,13 +183,13 @@ class ServerService extends ChangeNotifier {
       DocumentReference newUserChannelRef =
           newUserServerRef.collection('channels').doc();
       transaction.set(newUserChannelRef,
-          {'name': 'Ana Kanal', 'desc': '', 'type': 'metin'});
+          {'channelName': 'Ana Kanal', 'channelDesc': '', 'channelType': 'metin'});
 
       // Create a default channel for the server
       DocumentReference newChannelRef =
           newServerRef.collection('channels').doc();
       transaction.set(
-          newChannelRef, {'name': 'Ana Kanal', 'desc': '', 'type': 'metin'});
+          newChannelRef, {'channelName': 'Ana Kanal', 'channelDesc': '', 'channelType': 'metin'});
     });
 
     print('Sunucu başlangıç kanalı ile birlikte başarıyla oluşturuldu');
@@ -215,8 +215,7 @@ class ServerService extends ChangeNotifier {
     await _fireStore
         .collection('users')
         .doc(currentUserId)
-        .collection('servers')
-        .add(newServer.toMap());
+        .collection('servers').doc(serverId).set(newServer.toMap());
 
   }
 

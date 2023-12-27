@@ -104,44 +104,47 @@ class _ServerListPageState extends State<ServerListPage> {
       labelColor = Colors.pinkAccent;
     }
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ServerPage(serverId: document.id),
-            ));
-      },
-      child: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: _customColors.dcGrey, // Set the background color
-          border: Border.all(
-            color: _customColors.dcGrey, // Set the border color
-            width: 2.0, // Set the border width
-          ),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: ListTile(
-          title: Text(data['serverName']),
-          subtitle: Text(data['serverDesc']),
-          leading: CircleAvatar(
-            backgroundColor: _customColors.dcBlue,
-            child: Text(
-              data['serverName'][0],
-              style: TextStyle(fontSize: 36),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ServerPage(serverId: document.id),
+              ));
+        },
+        child: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: _customColors.dcGrey, // Set the background color
+            border: Border.all(
+              color: _customColors.dcGrey, // Set the border color
+              width: 2.0, // Set the border width
             ),
+            borderRadius: BorderRadius.circular(8.0),
           ),
-          trailing: Container(
-            height: 25,
-            width: 70,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: labelColor),
-            child: Center(
-                child: Text(
-              data['serverType'],
-              style: TextStyle(fontSize: 16),
-            )),
+          child: ListTile(
+            title: Text(data['serverName']),
+            subtitle: Text(data['serverDesc']),
+            leading: CircleAvatar(
+              backgroundColor: _customColors.dcBlue,
+              child: Text(
+                data['serverName'][0],
+                style: TextStyle(fontSize: 36),
+              ),
+            ),
+            trailing: Container(
+              height: 25,
+              width: 70,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: labelColor),
+              child: Center(
+                  child: Text(
+                data['serverType'],
+                style: TextStyle(fontSize: 16),
+              )),
+            ),
           ),
         ),
       ),

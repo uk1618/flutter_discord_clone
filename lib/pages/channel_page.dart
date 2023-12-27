@@ -74,7 +74,8 @@ class _ChannelPageState extends State<ChannelPage> {
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
-            title: Text('KANAL ID: ${widget.channelId}'),
+            title: Text('DISCORD'),
+            centerTitle: true,
           ),
           body: Column(
             children: [
@@ -112,12 +113,11 @@ class _ChannelPageState extends State<ChannelPage> {
       subtitle: Text(data['senderEmail']),
       trailing: Text(formatTimestamp(data['timestamp'])),
       leading: CircleAvatar(
-        backgroundColor: Colors.blue,
-        child: Text(
-          '1',
-          style: TextStyle(color: Colors.red),
-        ),
-      ),
+          backgroundColor: me ? Colors.blue : Colors.red,
+          child: Icon(
+            Icons.person_rounded,
+            color: Colors.white,
+          )),
     );
   }
 

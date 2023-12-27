@@ -173,7 +173,6 @@ joinAserver(serverId, serverName, serverDesc, serverType);
                 type: QuickAlertType.success,
                 confirmBtnText: 'OK',
                 text: 'Sunucuya katıldınız!',
-                autoCloseDuration: const Duration(seconds: 2),
               );
 
               Navigator.of(context).pop();

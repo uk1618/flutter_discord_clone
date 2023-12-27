@@ -198,6 +198,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+//* Hakkında bölümünü güncelleme
   Future<void> updateAboutText(String newText, userId) async {
     try {
       await FirebaseFirestore.instance

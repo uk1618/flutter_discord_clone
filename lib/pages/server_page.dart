@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/pages/channel_page.dart';
+import 'package:flutter_whatsapp_clone/pages/voice_channel_page.dart';
 
 import '../services/server/channel_service.dart';
 
@@ -143,11 +144,21 @@ class _ServerPageState extends State<ServerPage> {
           subtitle: Text(data['channelType']),
           onTap: () {
             //* pass the clicked user's UID to the chat page
-            Navigator.push(
+            if (data['channelType'] == 'metin') {
+       Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => ChannelPage(
                         channelId: document.id, serverId: widget.serverId)));
+    }
+
+    if (data['channelType'] == 'sesli') {
+       Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => VoiceChannelPage()));
+    }
+           
           },
         ),
       ),
