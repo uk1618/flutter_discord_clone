@@ -6,7 +6,9 @@ import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/pages/channel_page.dart';
 import 'package:flutter_whatsapp_clone/pages/voice_channel_page.dart';
 
+import '../constants/layout_mode.dart';
 import '../services/server/channel_service.dart';
+import 'voice_deneme.dart';
 
 class ServerPage extends StatefulWidget {
   final String serverId;
@@ -21,7 +23,8 @@ class ServerPage extends StatefulWidget {
 class _ServerPageState extends State<ServerPage> {
   final CustomColors _customColors = CustomColors();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
+  final layoutValueNotifier =
+      ValueNotifier<LayoutMode>(LayoutMode.defaultLayout);
   //* sunucunun detaylarını getirir
   Stream<DocumentSnapshot<Map<String, dynamic>>> getServerDetail(
       String serverId) {
@@ -145,21 +148,34 @@ class _ServerPageState extends State<ServerPage> {
           onTap: () {
             //* pass the clicked user's UID to the chat page
             if (data['channelType'] == 'metin') {
-       Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ChannelPage(
-                        channelId: document.id, serverId: widget.serverId)));
-    }
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChannelPage(
+                          channelId: document.id, serverId: widget.serverId)));
+            }
 
-    if (data['channelType'] == 'sesli') {
-       Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => VoiceChannelPage()));
-    }
-           
+            if (data['channelType'] == 'sesli') {
+              jumpToLivePage(context, document.id.toString(), true, _firebaseAuth.currentUser!.uid, _firebaseAuth.currentUser!.email.toString());
+            }
           },
+        ),
+      ),
+    );
+  }
+
+
+ void jumpToLivePage(BuildContext context, String roomID, bool isHost, String userID, String userName,
+) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LivePage(
+           roomID: roomID,
+           userID: userID,
+           userName: userName,
+           isHost: isHost,
+
         ),
       ),
     );
@@ -192,6 +208,8 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
 
   String selectedChannelType = 'metin';
   List<String> serverTypes = ['metin', 'sesli'];
+
+
 
   void createServer(userId) async {
     if (channelNameController.text.isNotEmpty) {
@@ -285,4 +303,6 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       ),
     );
   }
+
+ 
 }
