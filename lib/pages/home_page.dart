@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/pages/messages_page.dart';
@@ -8,7 +7,9 @@ import 'package:flutter_whatsapp_clone/pages/server_list_page.dart';
 import 'package:flutter_whatsapp_clone/services/auth/auth_service.dart';
 import 'package:flutter_whatsapp_clone/services/server/server_service.dart';
 import 'package:provider/provider.dart';
-import 'package:quickalert/quickalert.dart';
+
+
+import '../constants/custom_text.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -18,8 +19,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  //* instance of auth
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+
 
   //* sign user out
   void signOut() {
@@ -40,29 +40,29 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    CustomColors _customColors = CustomColors();
+    CustomColors customColors = CustomColors();
     return Scaffold(
-      backgroundColor: _customColors.dcDark,
+      backgroundColor: customColors.dcDark,
       appBar: AppBar(
-        backgroundColor: _customColors.dcDark,
+        backgroundColor: customColors.dcDark,
         elevation: 0,
-        title: Text('DISCORD'),
+        title: const Text('DISCORD'),
         centerTitle: true,
         leading: IconButton(
             onPressed: () {
               ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text('UMUT KONAK')));
+                  .showSnackBar(const SnackBar(content: Text('UMUT KONAK')));
             },
-            icon: Icon(Icons.question_mark_outlined)),
+            icon: const Icon(Icons.question_mark_outlined)),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.notifications))
+          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications))
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           iconSize: 28,
           backgroundColor: Colors.black,
-          selectedItemColor: _customColors.dcGreen,
+          selectedItemColor: customColors.dcGreen,
           unselectedItemColor: Colors.grey,
           elevation: 0,
           currentIndex: _currentIndex,
@@ -71,7 +71,7 @@ class _HomepageState extends State<Homepage> {
               _currentIndex = index;
             });
           },
-          items: [
+          items: const[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Anasayfa',
@@ -104,7 +104,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
+  HomeText homeText = HomeText();
 
   @override
   Widget build(BuildContext context) {
@@ -114,10 +114,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Text(
-              'Popüler Sunucular',
-              style: TextStyle(fontSize: 24),
+              homeText.popularServers,
+              style: const TextStyle(fontSize: 24),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             StreamBuilder(
@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return GridView(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2),
                   children: snapshot.data!.docs
                       .map((document) => _buildServerItem(document, context))
@@ -147,37 +147,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-void _showDialog(BuildContext context, String serverId, String serverName, String serverDesc, String serverType) {
-                  final ServerService _serverService = ServerService();
+void _showDialog(BuildContext context, String serverId, String serverName,
+    String serverDesc, String serverType) {
+  final ServerService serverService = ServerService();
 
   void joinAserver(String serverId, String serverName, String serverDesc,
       String serverType) async {
-    await _serverService.joinAserver(
+    await serverService.joinAserver(
         serverId, serverName, serverDesc, serverType);
   }
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
+      HomeText homeText = HomeText();
+
       return AlertDialog(
-        title: Text('Sunucuya Katıl'),
-        content: Text('Sunucuya katılmak istediğinizden emin misiniz ?'),
+        title: Text(homeText.joinServer),
+        content: Text(homeText.sureForJoinServer),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: CustomColors().dcBlue),
             onPressed: () {
-joinAserver(serverId, serverName, serverDesc, serverType);
-              QuickAlert.show(
-                context: context,
-                type: QuickAlertType.success,
-                confirmBtnText: 'OK',
-                text: 'Sunucuya katıldınız!',
-              );
-
+              joinAserver(serverId, serverName, serverDesc, serverType);
+              //QuickAlert.show(context: context,type: QuickAlertType.success,confirmBtnText: 'OK',text: 'Sunucuya katıldınız!',);
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(homeText.succesToJoinServer)));
               Navigator.of(context).pop();
             },
-            child: Text('KATIL'),
+            child: Text(homeText.join),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -185,7 +185,7 @@ joinAserver(serverId, serverName, serverDesc, serverType);
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('İPTAL'),
+            child: Text(homeText.cancel),
           )
         ],
       );
@@ -205,33 +205,34 @@ Widget _buildServerItem(DocumentSnapshot document, BuildContext context) {
           borderRadius: BorderRadius.circular(5)),
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          Container(
+          SizedBox(
             height: 85,
             width: 85,
             child: Image.asset('assets/server.png'),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Text(
             data['serverName'],
-            style: TextStyle(fontSize: 16, color: Colors.black),
+            style: const TextStyle(fontSize: 16, color: Colors.black),
           ),
-          Spacer(),
-          Container(
+          const Spacer(),
+          SizedBox(
             width: double.infinity,
             height: 35,
             child: ElevatedButton(
               onPressed: () {
-                _showDialog(context, serverId, data['serverName'], data['serverDesc'],  data['serverType']);
+                _showDialog(context, serverId, data['serverName'],
+                    data['serverDesc'], data['serverType']);
               },
-              child: Text('Sunucuya Katıl'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: CustomColors().dcBlue,
               ),
+              child: Text(HomeText().join),
             ),
           )
         ],
@@ -240,6 +241,7 @@ Widget _buildServerItem(DocumentSnapshot document, BuildContext context) {
   );
 }
 
+// ignore: must_be_immutable
 class CustomBottomBar extends StatefulWidget {
   int currentIndex = 0;
   CustomBottomBar({
@@ -254,6 +256,7 @@ class CustomBottomBar extends StatefulWidget {
 class _CustomBottomBarState extends State<CustomBottomBar> {
   @override
   Widget build(BuildContext context) {
+    BottomNavText bottomNavText = BottomNavText();
     return BottomNavigationBar(
         currentIndex: widget.currentIndex,
         onTap: (int index) {
@@ -263,20 +266,20 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Anasayfa',
+            icon: const Icon(Icons.home),
+            label: bottomNavText.homepage,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message_rounded),
-            label: 'Mesaj',
+            icon: const Icon(Icons.message_rounded),
+            label: bottomNavText.message,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.connect_without_contact),
-            label: 'Sunucu',
+            icon: const Icon(Icons.connect_without_contact),
+            label: bottomNavText.server,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
+            icon: const Icon(Icons.person),
+            label: bottomNavText.profile,
           ),
         ]);
   }

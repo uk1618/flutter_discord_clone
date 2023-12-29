@@ -24,6 +24,15 @@ class LoginText {
   String notAmember = "Hemen Kayıt Ol";
 }
 
+class HomeText {
+  String popularServers = 'Popüler Sunucular';
+  String joinServer = 'Sunucuya Katıl';
+  String sureForJoinServer = 'Sunucuya katılmak istediğinizden emin misiniz ?';
+  String succesToJoinServer = 'Sunucuya katıldınız !';
+  String join = 'Katıl';
+  String cancel = 'İptal';
+}
+
 class ProfileText {
   String email = 'Email';
   String creationDate = 'Hesap Oluşturma Tarihi';
@@ -32,10 +41,14 @@ class ProfileText {
 }
 
 class ServerText {
-  
   String createServer = 'Sunucu Oluştur';
   String serverName = 'Sunucu adı';
   String serverDesc = 'Sunucu hakkında';
+}
 
-
+class BottomNavText {
+  String homepage = 'Anasayfa';
+  String message = 'Mesaj';
+  String server = 'Server';
+  String profile = 'Profile';
 }

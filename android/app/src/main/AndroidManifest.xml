@@ -10,7 +10,7 @@
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
-        android:label="flutter_whatsapp_clone"
+        android:label="Discord Clone"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
