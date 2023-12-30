@@ -30,26 +30,24 @@ class ServerService extends ChangeNotifier {
     });
 
     // Aynı ID ile kullanıcı koleksiyonuna doküman ekle
-   try {
-  await usersCollection
-      .doc(currentUserId)
-      .collection('servers')
-      .doc(serverDocRef.id)
-      .set({
+    try {
+      await usersCollection
+          .doc(currentUserId)
+          .collection('servers')
+          .doc(serverDocRef.id)
+          .set({
         'serverName': serverName,
         'serverDesc': serverDesc,
         'serverType': serverType,
         'timestamp': timestamp,
       });
 
-  // Handle the completion of the set operation here
-  print('Server document set successfully!');
-} catch (error) {
-  // Handle errors here
-  print('Error setting server document: $error');
-}
-
-
+      // Handle the completion of the set operation here
+      print('Server document set successfully!');
+    } catch (error) {
+      // Handle errors here
+      print('Error setting server document: $error');
+    }
   }
 
   Future<void> createServer(
@@ -86,12 +84,9 @@ class ServerService extends ChangeNotifier {
         .snapshots();
   }
 
-
-  
   //* get all servers
   Stream<QuerySnapshot> getAllServers() {
-    return _fireStore
-        .collection('servers').snapshots();
+    return _fireStore.collection('servers').snapshots();
   }
 
   Future<void> createServerWithDefaultChannel(String currentUserId,
@@ -125,8 +120,11 @@ class ServerService extends ChangeNotifier {
         // Create a default channel for the server (user)
         DocumentReference newUserChannelRef =
             newUserServerRef.collection('channels').doc();
-        transaction.set(newUserChannelRef,
-            {'channelName': 'Ana Kanal', 'channelDesc': '', 'channelType': 'metin'});
+        transaction.set(newUserChannelRef, {
+          'channelName': 'Ana Kanal',
+          'channelDesc': '',
+          'channelType': 'metin'
+        });
 
         // Create a default channel for the server
         DocumentReference newChannelRef =
@@ -143,107 +141,120 @@ class ServerService extends ChangeNotifier {
 
 //* Sunucu Oluşturma
 
- Future<void> createServerWithDefaultChannel2(
-  String currentUserId,
-  String serverName,
-  String serverDesc,
-  String serverType,
-) async {
-  final CollectionReference userServersCollection = FirebaseFirestore.instance
-      .collection('users')
-      .doc(currentUserId)
-      .collection('servers');
-  final CollectionReference serverCollection =
-      FirebaseFirestore.instance.collection('servers');
-  final Timestamp timestamp = Timestamp.now();
-
-  Server newServer = Server(
-    creator: currentUserId,
-    serverName: serverName,
-    serverDesc: serverDesc,
-    serverType: serverType,
-    timestamp: timestamp,
-  );
-
-  // Generate a single ID for both user's server document and general server document
-  String serverId = FirebaseFirestore.instance.collection('dummy').doc().id;
-
-  try {
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      // Create a new server (user) with the same ID
-      DocumentReference newUserServerRef =
-          userServersCollection.doc(serverId);
-      transaction.set(newUserServerRef, newServer.toMap());
-
-      // Create a new server with the same ID
-      DocumentReference newServerRef = serverCollection.doc(serverId);
-      transaction.set(newServerRef, newServer.toMap());
-
-      // Create a default channel for the server (user)
-      DocumentReference newUserChannelRef =
-          newUserServerRef.collection('channels').doc();
-      transaction.set(newUserChannelRef,
-          {'channelName': 'Ana Kanal', 'channelDesc': '', 'channelType': 'metin'});
-
-      // Create a default channel for the server
-      DocumentReference newChannelRef =
-          newServerRef.collection('channels').doc();
-      transaction.set(
-          newChannelRef, {'channelName': 'Ana Kanal', 'channelDesc': '', 'channelType': 'metin'});
-    });
-
-    print('Sunucu başlangıç kanalı ile birlikte başarıyla oluşturuldu');
-  } catch (e) {
-    print('Sunucu oluşturulrken bir hata meydana geldi: $e');
-  }
-}
-  Future<void> joinAserver(
-      String serverId, String serverName, String serverDesc, String serverType, ) async {
-    //* get current user info
-    final String currentUserId = _firebaseAuth.currentUser!.uid;
+  Future<void> createServerWithDefaultChannel2(
+    String currentUserId,
+    String serverName,
+    String serverDesc,
+    String serverType,
+  ) async {
+    final CollectionReference userServersCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('servers');
+    final CollectionReference serverCollection =
+        FirebaseFirestore.instance.collection('servers');
     final Timestamp timestamp = Timestamp.now();
 
     Server newServer = Server(
-      creator: serverId,
+      creator: currentUserId,
       serverName: serverName,
       serverDesc: serverDesc,
       serverType: serverType,
       timestamp: timestamp,
     );
 
-    //* add new server to user -> database
-    await _fireStore
-        .collection('users')
-        .doc(currentUserId)
-        .collection('servers').doc(serverId).set(newServer.toMap());
+    // Generate a single ID for both user's server document and general server document
+    String serverId = FirebaseFirestore.instance.collection('dummy').doc().id;
 
+    try {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        // Create a new server (user) with the same ID
+        DocumentReference newUserServerRef =
+            userServersCollection.doc(serverId);
+        transaction.set(newUserServerRef, newServer.toMap());
+
+        // Create a new server with the same ID
+        DocumentReference newServerRef = serverCollection.doc(serverId);
+        transaction.set(newServerRef, newServer.toMap());
+
+        // Create a default channel for the server (user)
+        DocumentReference newUserChannelRef =
+            newUserServerRef.collection('channels').doc();
+        transaction.set(newUserChannelRef, {
+          'channelName': 'Ana Kanal',
+          'channelDesc': '',
+          'channelType': 'metin'
+        });
+
+        // Create a default channel for the server
+        DocumentReference newChannelRef =
+            newServerRef.collection('channels').doc();
+        transaction.set(newChannelRef, {
+          'channelName': 'Ana Kanal',
+          'channelDesc': '',
+          'channelType': 'metin'
+        });
+      });
+
+      print('Sunucu başlangıç kanalı ile birlikte başarıyla oluşturuldu');
+    } catch (e) {
+      print('Sunucu oluşturulrken bir hata meydana geldi: $e');
+    }
   }
 
+  Future<void> joinAserver(BuildContext context, String serverId,
+      String serverName, String serverDesc, String serverType) async {
+    //* get current user info
+    final String currentUserId = _firebaseAuth.currentUser!.uid;
+    final Timestamp timestamp = Timestamp.now();
+    bool isMember;
+    // Firestore bağlantısını başlat
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    // Koleksiyon ve belge referanslarını tanımla
+    CollectionReference collectionReference =
+        firestore.collection('users').doc(currentUserId).collection('servers');
+    DocumentReference documentReference = collectionReference.doc(serverId);
+
+    // Belgenin varlığını kontrol et
+    DocumentSnapshot documentSnapshot = await documentReference.get();
+    isMember = documentSnapshot.exists;
+    //! dokuman olup olmadığı kontrol ediilecek
+    if (!isMember) {
+      Server newServer = Server(
+        creator: serverId,
+        serverName: serverName,
+        serverDesc: serverDesc,
+        serverType: serverType,
+        timestamp: timestamp,
+      );
+
+      //* add new server to user -> database
+      await _fireStore
+          .collection('users')
+          .doc(currentUserId)
+          .collection('servers')
+          .doc(serverId)
+          .set(newServer.toMap());
+
+    } else {
+      print('Bu kullancı zaten sunucuya katıldı.');
+    }
   }
+}
 
-  //* get channels
-  Stream<QuerySnapshot> getChannels(String userId, String otherUserId) {
-      final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+//* get channels
+Stream<QuerySnapshot> getChannels(String userId, String otherUserId) {
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
-    List<String> ids = [userId, otherUserId];
-    ids.sort();
-    String chatRoomId = ids.join("_");
+  List<String> ids = [userId, otherUserId];
+  ids.sort();
+  String chatRoomId = ids.join("_");
 
-    return _fireStore
-        .collection('chat_rooms')
-        .doc(chatRoomId)
-        .collection('messages')
-        .orderBy('timestamp', descending: false)
-        .snapshots();
-
-
-
-
-
-
-  
-  }
-
-
-  
-
+  return _fireStore
+      .collection('chat_rooms')
+      .doc(chatRoomId)
+      .collection('messages')
+      .orderBy('timestamp', descending: false)
+      .snapshots();
+}

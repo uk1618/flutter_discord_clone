@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/pages/messages_page.dart';
@@ -7,8 +8,7 @@ import 'package:flutter_whatsapp_clone/pages/server_list_page.dart';
 import 'package:flutter_whatsapp_clone/services/auth/auth_service.dart';
 import 'package:flutter_whatsapp_clone/services/server/server_service.dart';
 import 'package:provider/provider.dart';
-
-
+import 'package:quickalert/quickalert.dart';
 import '../constants/custom_text.dart';
 
 class Homepage extends StatefulWidget {
@@ -19,8 +19,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-
-
   //* sign user out
   void signOut() {
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -71,7 +69,7 @@ class _HomepageState extends State<Homepage> {
               _currentIndex = index;
             });
           },
-          items: const[
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Anasayfa',
@@ -129,6 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
+
                 return GridView(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
@@ -150,12 +149,17 @@ class _HomeScreenState extends State<HomeScreen> {
 void _showDialog(BuildContext context, String serverId, String serverName,
     String serverDesc, String serverType) {
   final ServerService serverService = ServerService();
-
   void joinAserver(String serverId, String serverName, String serverDesc,
       String serverType) async {
-    await serverService.joinAserver(
-        serverId, serverName, serverDesc, serverType);
+   await serverService.joinAserver(
+      context,
+      serverId,
+      serverName,
+      serverDesc,
+      serverType,
+    );
   }
+  
 
   showDialog(
     context: context,
@@ -169,13 +173,18 @@ void _showDialog(BuildContext context, String serverId, String serverName,
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: CustomColors().dcBlue),
-            onPressed: () {
-              joinAserver(serverId, serverName, serverDesc, serverType);
-              //QuickAlert.show(context: context,type: QuickAlertType.success,confirmBtnText: 'OK',text: 'Sunucuya katıldınız!',);
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(homeText.succesToJoinServer)));
-              Navigator.of(context).pop();
+                backgroundColor: CustomColors().dcBlue,
+                ),
+            onPressed: ()  {
+             joinAserver(serverId, serverName, serverDesc, serverType);
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.success,
+                  text: 'Sunucuya katıldınız!',
+                  autoCloseDuration: Duration(seconds: 5),
+                );
+                Navigator.of(context).pop();
+              
             },
             child: Text(homeText.join),
           ),
@@ -191,11 +200,16 @@ void _showDialog(BuildContext context, String serverId, String serverName,
       );
     },
   );
+
+  
 }
+
+
 
 Widget _buildServerItem(DocumentSnapshot document, BuildContext context) {
   Map<String, dynamic> data = document.data() as Map<String, dynamic>;
   String serverId = document.id;
+
   return Padding(
     padding: const EdgeInsets.all(4.0),
     child: Container(
@@ -283,4 +297,8 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
           ),
         ]);
   }
+  
 }
+
+
+
