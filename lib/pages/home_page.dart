@@ -174,24 +174,8 @@ void _showDialog(BuildContext context, String serverId, String serverName,
             style: ElevatedButton.styleFrom(
               backgroundColor: CustomColors().dcBlue,
             ),
-            onPressed: () async{
-              bool isMember = await userIsMember(serverId);
-             if (!isMember) {
+            onPressed: () {
                 joinAserver(serverId, serverName, serverDesc, serverType);
-              QuickAlert.show(
-                context: context,
-                type: QuickAlertType.success,
-                text: 'Sunucuya katıldınız!',
-                autoCloseDuration: Duration(seconds: 5),
-              );
-             } else {
-                 QuickAlert.show(
-                context: context,
-                type: QuickAlertType.warning,
-                text: 'Bu sunucuya zaten katıldınız',
-                autoCloseDuration: Duration(seconds: 5),
-              );
-             }
               Navigator.of(context).pop();
             },
             child: Text(homeText.join),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 
 import '../../model/server.dart';
 
@@ -236,8 +237,48 @@ class ServerService extends ChangeNotifier {
           .collection('servers')
           .doc(serverId)
           .set(newServer.toMap());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Container(
+            padding: EdgeInsets.symmetric(vertical: 12.0),
+            decoration: BoxDecoration(
+              color: CustomColors().dcGreen,
+              borderRadius:
+                  BorderRadius.circular(8.0), // Optional: Add border radius
+            ),
+            child: Text(
+              "${newServer.serverName} adlı sunucuya katıldınız!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white, // Set the text color to white
+                fontSize: 16.0,
+              ),
+            ),
+          ),
+        ),
+      );
     } else {
-      print('Bu kullancı zaten sunucuya katıldı.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Container(
+            padding: EdgeInsets.symmetric(vertical: 12.0),
+            decoration: BoxDecoration(
+              color: CustomColors().dcGrey,
+              borderRadius:
+                  BorderRadius.circular(8.0), // Optional: Add border radius
+            ),
+            child: Text(
+              "Bu sunucuya zaten üyesiniz.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: CustomColors().dcRed, // Set the text color to white
+                fontSize: 16.0,
+              ),
+            ),
+          ),
+        ),
+      );
     }
   }
 }
