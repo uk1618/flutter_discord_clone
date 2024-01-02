@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/pages/messages_page.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_whatsapp_clone/pages/server_list_page.dart';
 import 'package:flutter_whatsapp_clone/services/auth/auth_service.dart';
 import 'package:flutter_whatsapp_clone/services/server/server_service.dart';
 import 'package:provider/provider.dart';
-import 'package:quickalert/quickalert.dart';
 import '../constants/custom_text.dart';
 
 class Homepage extends StatefulWidget {
@@ -175,7 +173,7 @@ void _showDialog(BuildContext context, String serverId, String serverName,
               backgroundColor: CustomColors().dcBlue,
             ),
             onPressed: () {
-                joinAserver(serverId, serverName, serverDesc, serverType);
+              joinAserver(serverId, serverName, serverDesc, serverType);
               Navigator.of(context).pop();
             },
             child: Text(homeText.join),

@@ -35,7 +35,6 @@ dependencies:
   floating_action_bubble: ^1.1.4
   flutter:
     sdk: flutter
-  
   flutter_native_splash: ^2.3.7
   flutter_speed_dial: ^7.0.0
   flutter_svg: ^2.0.9
@@ -43,17 +42,14 @@ dependencies:
   intl_utils: ^2.8.6
   provider: ^6.1.1
   quickalert: ^1.0.2
+  zego_uikit_prebuilt_call: ^3.19.0
   zego_uikit_prebuilt_live_audio_room: ^2.15.0
-
-
-
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-
 
 flutter_launcher_icons:
   android: "launcher_icon"

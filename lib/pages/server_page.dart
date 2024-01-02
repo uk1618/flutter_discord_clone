@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_whatsapp_clone/constants/custom_color.dart';
 import 'package:flutter_whatsapp_clone/pages/channel_page.dart';
-import 'package:flutter_whatsapp_clone/pages/voice_channel_page.dart';
+import 'package:flutter_whatsapp_clone/pages/group_call_page.dart';
+
 
 import '../constants/layout_mode.dart';
 import '../services/server/channel_service.dart';
-import 'voice_deneme.dart';
+
 
 class ServerPage extends StatefulWidget {
   final String serverId;
@@ -156,7 +157,11 @@ class _ServerPageState extends State<ServerPage> {
             }
 
             if (data['channelType'] == 'sesli') {
-              jumpToLivePage(context, document.id.toString(), true, _firebaseAuth.currentUser!.uid, _firebaseAuth.currentUser!.email.toString());
+              String documentId = document.id.toString();
+//String roomId = documentId.substring(0, 6);
+              String roomId = '1234';
+              jumpToLivePage(context, roomId, true, '1234567',
+                  _firebaseAuth.currentUser!.email.toString());
             }
           },
         ),
@@ -164,20 +169,18 @@ class _ServerPageState extends State<ServerPage> {
     );
   }
 
-
- void jumpToLivePage(BuildContext context, String roomID, bool isHost, String userID, String userName,
-) {
+  void jumpToLivePage(
+    BuildContext context,
+    String roomID,
+    bool isHost,
+    String userID,
+    String userName,
+  ) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LivePage(
-           roomID: roomID,
-           userID: userID,
-           userName: userName,
-           isHost: isHost,
-
-        ),
-      ),
+          builder: (context) => GroupCallPage(
+              userId: userID, userName: userName, callId: roomID)),
     );
   }
 
@@ -208,8 +211,6 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
 
   String selectedChannelType = 'metin';
   List<String> serverTypes = ['metin', 'sesli'];
-
-
 
   void createServer(userId) async {
     if (channelNameController.text.isNotEmpty) {
@@ -303,6 +304,4 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
       ),
     );
   }
-
- 
 }

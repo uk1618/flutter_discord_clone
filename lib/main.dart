@@ -6,6 +6,7 @@ import 'package:flutter_whatsapp_clone/services/auth/auth_gate.dart';
 import 'package:flutter_whatsapp_clone/services/auth/auth_service.dart';
 import 'package:provider/provider.dart';
 
+
 import 'constants/custom_color.dart';
 
 void main() async {
@@ -14,14 +15,22 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(ChangeNotifierProvider(
-    create: (context) => AuthService(),
-    child: MyApp(),
-  ));
+
+    runApp(ChangeNotifierProvider(
+      create: (context) => AuthService(),
+      child: MyApp(),
+    ));
+
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   CustomColors _customColors = CustomColors();
+
   ThemeData darkThemeWithCustomBackground() {
     return ThemeData.dark().copyWith(
       scaffoldBackgroundColor: _customColors
@@ -36,6 +45,8 @@ class MyApp extends StatelessWidget {
         title: 'Material App',
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark(),
-        home: AuthGate());
+        home: AuthGate(),
+        );
+        
   }
 }
