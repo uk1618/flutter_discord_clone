@@ -151,7 +151,7 @@ void _showDialog(BuildContext context, String serverId, String serverName,
   final ServerService serverService = ServerService();
   void joinAserver(String serverId, String serverName, String serverDesc,
       String serverType) async {
-   await serverService.joinAserver(
+    await serverService.joinAserver(
       context,
       serverId,
       serverName,
@@ -159,7 +159,6 @@ void _showDialog(BuildContext context, String serverId, String serverName,
       serverType,
     );
   }
-  
 
   showDialog(
     context: context,
@@ -173,18 +172,27 @@ void _showDialog(BuildContext context, String serverId, String serverName,
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: CustomColors().dcBlue,
-                ),
-            onPressed: ()  {
-             joinAserver(serverId, serverName, serverDesc, serverType);
-                QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.success,
-                  text: 'Sunucuya katıldınız!',
-                  autoCloseDuration: Duration(seconds: 5),
-                );
-                Navigator.of(context).pop();
-              
+              backgroundColor: CustomColors().dcBlue,
+            ),
+            onPressed: () async{
+              bool isMember = await userIsMember(serverId);
+             if (!isMember) {
+                joinAserver(serverId, serverName, serverDesc, serverType);
+              QuickAlert.show(
+                context: context,
+                type: QuickAlertType.success,
+                text: 'Sunucuya katıldınız!',
+                autoCloseDuration: Duration(seconds: 5),
+              );
+             } else {
+                 QuickAlert.show(
+                context: context,
+                type: QuickAlertType.warning,
+                text: 'Bu sunucuya zaten katıldınız',
+                autoCloseDuration: Duration(seconds: 5),
+              );
+             }
+              Navigator.of(context).pop();
             },
             child: Text(homeText.join),
           ),
@@ -200,11 +208,7 @@ void _showDialog(BuildContext context, String serverId, String serverName,
       );
     },
   );
-
-  
 }
-
-
 
 Widget _buildServerItem(DocumentSnapshot document, BuildContext context) {
   Map<String, dynamic> data = document.data() as Map<String, dynamic>;
@@ -297,8 +301,4 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
           ),
         ]);
   }
-  
 }
-
-
-

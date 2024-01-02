@@ -236,11 +236,28 @@ class ServerService extends ChangeNotifier {
           .collection('servers')
           .doc(serverId)
           .set(newServer.toMap());
-
     } else {
       print('Bu kullancı zaten sunucuya katıldı.');
     }
   }
+}
+
+Future<bool> userIsMember(String serverId) async {
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final String currentUserId = _firebaseAuth.currentUser!.uid;
+  bool isMember;
+  // Firestore bağlantısını başlat
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  // Koleksiyon ve belge referanslarını tanımla
+  CollectionReference collectionReference =
+      firestore.collection('users').doc(currentUserId).collection('servers');
+  DocumentReference documentReference = collectionReference.doc(serverId);
+
+  // Belgenin varlığını kontrol et
+  DocumentSnapshot documentSnapshot = await documentReference.get();
+  isMember = documentSnapshot.exists;
+  return isMember;
 }
 
 //* get channels
